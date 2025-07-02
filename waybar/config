@@ -8,7 +8,7 @@
         "custom/textthree",
         "custom/textfour",
         "custom/textfive",
-        "custom/media"
+        "mpris"
     ],
     "modules-center": [
         "hyprland/workspaces"

@@ -1,0 +1,84 @@
+(defwindow control-center
+  :monitor 0
+  :geometry (geometry :x "4%"
+                      :y "1%"
+                      :width "320px"
+                      :height "100px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :windowtype "dock"
+  (control-center-widget)
+)
+
+(defwidget control-center-widget []
+  (eventbox :onhover "eww update show_control_center=true"
+            :onhoverlost "eww update show_control_center=false && eww close control-center"
+            :class "control-center-hover-area"
+    (box :class "control-center-container" :orientation "v" :space-evenly false :spacing 10
+      (box :class "header" :space-evenly false :spacing 10 :halign "center"
+        (label :class "header-app" :text "CONTROL PANEL")
+      )
+      (box :class "quick-settings" :orientation "h" :spacing 10 :space-evenly false
+        (box :class "quick-connections" :orientation "v" 
+          (connectivity-button :icon "󰤨" :label "Wi-Fi" :sublabel "XIAOMI 6E" :active true)
+          (connectivity-button :icon "󰂯" :label "Bluetooth" :sublabel "On" :active true)
+        )
+        (box :class "function-buttons" :orientation "v" :spacing 10
+          (function-button :icon "󰿎" :label "Battery Mode" :subtext "Eco" :active false)
+            (function-button :icon "󰍶" :label "DND" :subtext "On" :active true) 
+        )
+      )
+      (box :class "slider-container" :orientation "v" :space-evenly false :spacing 20
+        (slider-control :icon "󰍹" :name "Display" :type "brightness")
+        (slider-control :icon "󰕾" :name "Audio" :type "volume")
+      )
+    )
+  )
+)
+
+(defwidget connectivity-button [icon label sublabel active]
+  (box :class "connectivity-button-container" :orientation "h" :space-evenly false
+    (box :class "connectivity-button ${active ? 'active' : 'inactive'}" :space-evenly false :spacing 10
+      (box :class "connectivity-icon-container" :halign "center"
+       (label :class "connectivity-icon" :text icon)
+      )
+      (box :orientation "v" :valign "center" 
+       (label :class "connectivity-label" :text label :halign "start")
+       (label :class "connectivity-sublabel" :text sublabel :halign "start")
+      )
+    )
+    (box :class "connectivity-more" :halign "end"
+      (label :class "connectivity-arrow" :text ">")
+    )
+  )
+)
+
+(defwidget function-button [icon label ?subtext active]
+  (box :class "function-button ${active ? 'active' : 'inactive'}"
+       :orientation "v"
+       :space-evenly false
+    (label :class "function-icon" :text icon)
+    (label :class "function-label" :text label)
+    (label :class "function-subtext" :text {subtext ?: ""})
+  )
+)
+
+(defwidget slider-control [icon name type]
+  (box :class "slider-control-row" :orientation "v" :space-evenly false :spacing 10
+    (box :class "slider-label" :orientation "h" :space-evenly false
+      (box :orientation "h" :space-evenly false :hexpand true
+        (label :class "slider-icon" :text icon)
+        (label :class "slider-name" :text name)
+      )
+      (label :class "slider-value" 
+             :text {type == "brightness" ? brightness-display : volume-display}
+             :halign "end")
+    )
+    (scale :class "slider"
+           :value {type == "brightness" ? brightness-level : volume-level}
+           :onchange {type == "brightness" ? "brightnessctl set {}%" : "pactl set-sink-volume @DEFAULT_SINK@ {}%"}
+           :min {type == "brightness" ? 1 : 0}
+           :max 101
+    )
+  )
+)

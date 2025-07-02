@@ -1,0 +1,68 @@
+(defwidget window []
+  (box  :class "active_window"
+        :orientation "h"
+        :space-evenly false
+        :spacing 5
+        :halign "end"
+        :valign "center"
+    (image 
+      :path active_window_icon
+      :image-width icon_size
+      :image-height icon_size
+    )
+  ) 
+)
+
+(defwidget compo_temp [] 
+  (box :class "compo_temp"
+       :orientation "h"
+    (image  :path "/home/duck/.local/share/icons/WhiteSur-dark/status/symbolic/temperature-symbolic.svg" 
+            :image-width icon_size
+            :image-height icon_size
+    )
+    (label :text "${round((EWW_TEMPS.CORETEMP_CORE_0 + EWW_TEMPS.CORETEMP_CORE_1) / 2, 0)}°C")
+  )
+)
+
+(defwidget ram []
+  (box  :class "ram"
+        :orientation "h"
+    (image  :path "/home/duck/.local/share/icons/WhiteSur-dark/devices/symbolic/media-memory-symbolic.svg" 
+            :image-width icon_size
+            :image-height icon_size
+    )
+    (label :text "${round((EWW_RAM.used_mem_perc), 0)}%") 
+  )
+)
+
+
+;; I can not find any suitable cpu icon for this widget so I have to implement a workaround using 2 labels with the "small_icon" class to upscale the icon size 
+(defwidget cpu []
+  (box  :class "cpu"
+        :orientation "h"
+    (label :text "" :class "small_icon")
+    (label :text "${round((EWW_CPU.avg), 0)}%")
+  )
+)
+
+(defwidget disk [] 
+  (box  :class "disk"
+        :orientation "h"
+    (image  :path "/home/duck/.local/share/icons/WhiteSur-dark/devices/symbolic/drive-harddisk-solidstate-symbolic.svg" 
+            :image-width icon_size
+            :image-height icon_size
+    )
+    (label :text "${round((EWW_DISK["/"].used_perc), 0)}%")
+  )
+)
+
+(defwidget music []
+  (box :class "music"
+       :orientation "h"
+       :space-evenly false
+       :halign "start"
+    (label :text {music != "" ? (strlength(music) <= 20 ? "  " + music : "  " + substring(music, 0, 19) + "...") : "  No audio"})
+  )
+)
+
+
